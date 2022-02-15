@@ -1,7 +1,5 @@
-// ignore_for_file: deprecated_member_use
-
 import 'dart:io';
-import 'dart:math';
+
 import 'package:agenda/helpers/contact_helper.dart';
 import 'package:agenda/ui/contact_page.dart';
 import 'package:flutter/material.dart';
@@ -16,11 +14,13 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   ContactHelper helper = ContactHelper();
+
   List<Contact> contacts = List();
+
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
+
     _getAllContacts();
   }
 
@@ -35,13 +35,13 @@ class _HomePageState extends State<HomePage> {
           PopupMenuButton<OrderOptions>(
             itemBuilder: (context) => <PopupMenuEntry<OrderOptions>>[
               const PopupMenuItem<OrderOptions>(
-                child: Text("Ordernar de A-Z"),
+                child: Text("Ordenar de A-Z"),
                 value: OrderOptions.orderaz,
               ),
               const PopupMenuItem<OrderOptions>(
-                child: Text("Ordernar de Z-A"),
+                child: Text("Ordenar de Z-A"),
                 value: OrderOptions.orderza,
-              )
+              ),
             ],
             onSelected: _orderList,
           )
@@ -119,58 +119,60 @@ class _HomePageState extends State<HomePage> {
         context: context,
         builder: (context) {
           return BottomSheet(
-              onClosing: () {},
-              builder: (context) {
-                return Container(
-                  padding: EdgeInsets.all(10.0),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: <Widget>[
-                      Padding(
-                        padding: EdgeInsets.all(10.0),
-                        child: FlatButton(
-                          child: Text(
-                            "Ligar",
-                            style: TextStyle(color: Colors.red, fontSize: 20.0),
-                          ),
-                          onPressed: () {
-                            launch("tel:${contacts[index].phone}");
-                          },
+            onClosing: () {},
+            builder: (context) {
+              return Container(
+                padding: EdgeInsets.all(10.0),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    Padding(
+                      padding: EdgeInsets.all(10.0),
+                      child: FlatButton(
+                        child: Text(
+                          "Ligar",
+                          style: TextStyle(color: Colors.red, fontSize: 20.0),
                         ),
+                        onPressed: () {
+                          launch("tel:${contacts[index].phone}");
+                          Navigator.pop(context);
+                        },
                       ),
-                      Padding(
-                        padding: EdgeInsets.all(10.0),
-                        child: FlatButton(
-                          child: Text(
-                            "Editar",
-                            style: TextStyle(color: Colors.red, fontSize: 20.0),
-                          ),
-                          onPressed: () {
+                    ),
+                    Padding(
+                      padding: EdgeInsets.all(10.0),
+                      child: FlatButton(
+                        child: Text(
+                          "Editar",
+                          style: TextStyle(color: Colors.red, fontSize: 20.0),
+                        ),
+                        onPressed: () {
+                          Navigator.pop(context);
+                          _showContactPage(contact: contacts[index]);
+                        },
+                      ),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.all(10.0),
+                      child: FlatButton(
+                        child: Text(
+                          "Excluir",
+                          style: TextStyle(color: Colors.red, fontSize: 20.0),
+                        ),
+                        onPressed: () {
+                          helper.deleteContact(contacts[index].id);
+                          setState(() {
+                            contacts.removeAt(index);
                             Navigator.pop(context);
-                            _showContactPage(contact: contacts[index]);
-                          },
-                        ),
+                          });
+                        },
                       ),
-                      Padding(
-                        padding: EdgeInsets.all(10.0),
-                        child: FlatButton(
-                          child: Text(
-                            "Excluir",
-                            style: TextStyle(color: Colors.red, fontSize: 20.0),
-                          ),
-                          onPressed: () {
-                            helper.deleteContact(contacts[index].id);
-                            setState(() {
-                              contacts.removeAt(index);
-                              Navigator.pop(context);
-                            });
-                          },
-                        ),
-                      )
-                    ],
-                  ),
-                );
-              });
+                    ),
+                  ],
+                ),
+              );
+            },
+          );
         });
   }
 
@@ -206,14 +208,12 @@ class _HomePageState extends State<HomePage> {
           return a.name.toLowerCase().compareTo(b.name.toLowerCase());
         });
         break;
-
       case OrderOptions.orderza:
         contacts.sort((a, b) {
           return b.name.toLowerCase().compareTo(a.name.toLowerCase());
         });
         break;
     }
-
     setState(() {});
   }
 }
